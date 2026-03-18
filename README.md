@@ -1,5 +1,7 @@
 # freememory-lite
 
+> a lighter version of https://github.com/p-society/FreeMemory 
+
 A dead simple, fully local memory layer for AI agents. It runs as an MCP server over stdio so any AI SDK, OpenCode, Claude Desktop, or anything that speaks MCP can plug in and get persistent memory.
 
 Your AI remembers things. Across sessions. Across projects. Without sending anything to the cloud (unless you want it to).
