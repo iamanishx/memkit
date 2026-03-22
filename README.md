@@ -1,4 +1,4 @@
-# code-memory
+# memkit
 
 A fully local, persistent memory layer for AI agents. Runs as an **MCP server over stdio** for Claude Desktop, OpenCode, and any MCP client — and also ships a **native AI SDK adapter** so you can drop it directly into any `generateText` / `streamText` agent without any MCP wiring.
 
@@ -56,9 +56,9 @@ This is the recommended way to use `code-memory` when building agents with the V
 ### Install
 
 ```bash
-bun add code-memory ai
+bun add memkit ai
 # or
-npm install code-memory ai
+npm install memkit ai
 ```
 
 Set your embedding backend env vars (see Configuration below), then:
@@ -66,8 +66,8 @@ Set your embedding backend env vars (see Configuration below), then:
 ### `createMemory` — one call setup
 
 ```typescript
-import { createMemory } from "code-memory/adapter"
-import { wrapLanguageModel, streamText, stepCountIs } from "ai"
+import { createMemory } from "memkit/adapter"
+import { streamText, stepCountIs } from "ai"
 import { openai } from "@ai-sdk/openai"
 
 const memory = createMemory({
@@ -96,7 +96,7 @@ If you want to wire the middleware yourself via `wrapLanguageModel`:
 
 ```typescript
 import { wrapLanguageModel, streamText } from "ai"
-import { memoryMiddleware } from "code-memory/adapter"
+import { memoryMiddleware } from "memkit/adapter"
 import { anthropic } from "@ai-sdk/anthropic"
 
 const model = wrapLanguageModel({
@@ -126,7 +126,7 @@ Give the model direct control over memory. Useful when you want the model to dec
 
 ```typescript
 import { generateText, stepCountIs } from "ai"
-import { memoryTools } from "code-memory/adapter"
+import { memoryTools } from "memkit/adapter"
 import { openai } from "@ai-sdk/openai"
 
 const result = await generateText({
@@ -146,7 +146,7 @@ Available tools: `add_memory`, `search_memory`, `delete_memory`, `list_sessions`
 If you also need the `EmbeddingModel` (for `embed()` / `embedMany()` calls), use the async factory:
 
 ```typescript
-import { createMemoryAsync } from "code-memory/adapter"
+import { createMemoryAsync } from "memkit/adapter"
 import { embed } from "ai"
 
 const memory = await createMemoryAsync({
@@ -205,8 +205,8 @@ ollama pull nomic-embed-text
 ```
 
 ```bash
-git clone https://github.com/xmanish/code-memory.git
-cd code-memory
+git clone https://github.com/xmanish/memkit.git
+cd memkit
 bun install
 bun run start
 ```
@@ -220,7 +220,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` on macO
   "mcpServers": {
     "memory": {
       "command": "bun",
-      "args": ["run", "/path/to/code-memory/src/server.ts"],
+      "args": ["run", "/path/to/memkit/src/server.ts"],
       "env": {
         "EMBEDDING_BACKEND": "ollama"
       }
@@ -291,7 +291,7 @@ OPENAI_API_KEY=sk-...
 OPENAI_EMBED_MODEL=text-embedding-3-small
 
 # database location
-DB_PATH=~/.code-memory/memory.db
+DB_PATH=~/.memkit/memory.db
 
 # graph linking
 EDGE_THRESHOLD=0.82
