@@ -9,3 +9,5 @@ bun.lockb
 Agents.md
 dist/
 .DS_Store
+skills-lock.json
+.agents
