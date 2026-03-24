@@ -8,6 +8,9 @@ export function ftsSearch(db: Database, input: SearchMemoryInput): SearchResult[
   const candidates = getCandidates(db, input)
   if (candidates.length === 0) return []
 
+  const query = sanitizeFtsQuery(input.query)
+  if (!query) return []
+
   const candidateIds = candidates.map((c) => c.id)
 
   const ftsRows = db
@@ -18,7 +21,7 @@ export function ftsSearch(db: Database, input: SearchMemoryInput): SearchResult[
        WHERE memory_fts MATCH ? AND m.project_id IS NOT NULL
        ORDER BY rank`
     )
-    .all(sanitizeFtsQuery(input.query))
+    .all(query)
 
   const ranked = ftsRows
     .filter((r) => candidateIds.includes(r.id))

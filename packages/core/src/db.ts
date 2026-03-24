@@ -94,6 +94,22 @@ function migrate(db: Database, retrieval: RetrievalMethod) {
         INSERT INTO memory_fts(rowid, content) VALUES (new.rowid, new.content);
       END
     `)
+
+    const hasMissingFtsRows =
+      db
+        .query<{ has_missing: number }, []>(
+          `SELECT EXISTS(
+             SELECT 1
+             FROM memory m
+             LEFT JOIN memory_fts f ON f.rowid = m.rowid
+             WHERE f.rowid IS NULL
+           ) AS has_missing`
+        )
+        .get()?.has_missing === 1
+
+    if (hasMissingFtsRows) {
+      db.run(`INSERT INTO memory_fts(memory_fts) VALUES ('rebuild')`)
+    }
   }
 }
 

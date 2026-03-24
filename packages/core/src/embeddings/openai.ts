@@ -19,13 +19,21 @@ export class OpenAIEmbedder implements Embedder {
   }
 
   async embed(text: string): Promise<number[]> {
+    const body: { model: string; input: string; dimensions?: number } = {
+      model: this.modelId,
+      input: text,
+    }
+    if (this.modelId.startsWith("text-embedding-3")) {
+      body.dimensions = this.dimensions
+    }
+
     const res = await fetch("https://api.openai.com/v1/embeddings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify({ model: this.modelId, input: text }),
+      body: JSON.stringify(body),
     })
     if (!res.ok) throw new Error(`OpenAI embedding failed: ${res.status} ${await res.text()}`)
     const json = (await res.json()) as { data: Array<{ embedding: number[] }> }

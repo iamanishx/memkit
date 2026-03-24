@@ -2,7 +2,7 @@ import { OllamaEmbedder, OpenAIEmbedder } from "@memkit/core"
 import type { MemoryEngineConfig, RetrievalMethod } from "@memkit/core"
 
 export function buildEngineConfigFromEnv(): MemoryEngineConfig {
-  const retrieval = (process.env.MEMKIT_RETRIEVAL ?? "vector") as RetrievalMethod
+  const retrieval = parseRetrievalMethod(process.env.MEMKIT_RETRIEVAL)
   const dbPath = process.env.DB_PATH
   const windowSize = process.env.WINDOW_SIZE ? parseInt(process.env.WINDOW_SIZE, 10) : 40
   const edgeThreshold = process.env.EDGE_THRESHOLD ? parseFloat(process.env.EDGE_THRESHOLD) : 0.82
@@ -47,4 +47,10 @@ export function buildEngineConfigFromEnv(): MemoryEngineConfig {
       dimensions: parseInt(dimensions, 10),
     }),
   }
+}
+
+function parseRetrievalMethod(rawValue: string | undefined): RetrievalMethod {
+  const value = rawValue ?? "vector"
+  if (value === "vector" || value === "fts" || value === "hybrid") return value
+  throw new Error(`MEMKIT_RETRIEVAL must be one of: vector, fts, hybrid. Received: ${value}`)
 }
