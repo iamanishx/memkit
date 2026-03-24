@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+export type RetrievalMethod = "fts" | "vector" | "hybrid"
+
 export const SessionSchema = z.object({
   id: z.string(),
   project_id: z.string(),
@@ -11,26 +13,6 @@ export type Session = z.infer<typeof SessionSchema>
 
 export const MemoryMetadataSchema = z.record(z.string(), z.any())
 export type MemoryMetadata = z.infer<typeof MemoryMetadataSchema>
-
-export const MemorySchema = z.object({
-  id: z.string(),
-  session_id: z.string(),
-  project_id: z.string(),
-  content: z.string(),
-  metadata: MemoryMetadataSchema.optional(),
-  created_at: z.number(),
-  updated_at: z.number(),
-})
-export type Memory = z.infer<typeof MemorySchema>
-
-export const MemoryEdgeSchema = z.object({
-  id: z.string(),
-  src_id: z.string(),
-  dst_id: z.string(),
-  score: z.number(),
-  created_at: z.number(),
-})
-export type MemoryEdge = z.infer<typeof MemoryEdgeSchema>
 
 export const AddMemoryInputSchema = z.object({
   content: z.string().describe("The text content to remember"),
@@ -44,9 +26,10 @@ export const SearchMemoryInputSchema = z.object({
   query: z.string().describe("Natural language query to search memories"),
   project_id: z.string().describe("Project ID to search within"),
   session_id: z.string().optional().describe("Optionally restrict to a specific session"),
-  limit: z.number().int().min(1).max(50).default(10).describe("Max results to return"),
-  min_score: z.number().min(0).max(1).default(0.5).describe("Minimum cosine similarity threshold"),
-  expand_graph: z.boolean().default(false).describe("Also return 1-hop graph neighbors of top results"),
+  limit: z.number().int().min(1).max(50).default(10).describe("Max results to return from the candidate pool"),
+  window_size: z.number().int().min(1).default(40).describe("How many recent memories to consider as candidate pool"),
+  min_score: z.number().min(0).max(1).default(0.5).describe("Minimum score threshold (cosine for vector, BM25-norm for fts)"),
+  expand_graph: z.boolean().default(false).describe("Also return 1-hop graph neighbors of top results (vector/hybrid only)"),
 })
 export type SearchMemoryInput = z.infer<typeof SearchMemoryInputSchema>
 
@@ -96,4 +79,11 @@ export interface SearchResult {
 export interface GraphResult {
   nodes: Array<{ id: string; content: string; metadata?: MemoryMetadata }>
   edges: Array<{ src_id: string; dst_id: string; score: number }>
+}
+
+export interface MemoryStats {
+  memory_count: number
+  session_count: number
+  edge_count: number
+  db_size_bytes: number
 }

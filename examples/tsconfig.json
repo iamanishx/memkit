@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": false,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "types": ["@types/bun"],
+        "paths": {
+            "@memkit/core": ["../packages/core/src/index.ts"],
+            "@memkit/ai-sdk": ["../packages/ai-sdk/src/index.ts"]
+        }
+    },
+    "include": ["./**/*"]
+}

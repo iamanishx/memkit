@@ -1,21 +1,19 @@
 {
     "name": "memkit",
-    "version": "0.1.0",
-    "description": "Local persistent memory layer for AI agents — MCP server + AI SDK adapter",
-    "module": "src/server.ts",
-    "bin": {
-        "code-memory": "./src/server.ts"
-    },
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
     "scripts": {
-        "start": "bun run src/server.ts",
-        "dev": "bun --watch src/server.ts"
-    },
-    "dependencies": {
-        "@modelcontextprotocol/sdk": "^1.12.1",
-        "ai": "^6.0.134",
-        "zod": "^3.24.4"
+        "typecheck": "bun run --filter '*' typecheck",
+        "dev:mcp": "bun run packages/mcp/src/index.ts",
+        "dev:core": "bun --watch packages/core/src/index.ts"
     },
     "devDependencies": {
         "@types/bun": "latest"
+    },
+    "dependencies": {
+        "@ai-sdk/openai": "^3.0.48",
+        "ai": "^6.0.137"
     }
 }
