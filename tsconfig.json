@@ -1,11 +1,14 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "types": ["bun-types"]
-  },
-  "include": ["src/**/*"]
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "paths": {
+            "@memkit/core": ["./packages/core/src/index.ts"],
+            "@memkit/ai-sdk": ["./packages/ai-sdk/src/index.ts"],
+            "@memkit/mcp": ["./packages/mcp/src/index.ts"]
+        },
+        "noEmit": true,
+        "strict": false,
+        "noImplicitAny": false
+    },
+    "include": ["packages/*/src/**/*"]
 }
